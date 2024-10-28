@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UK Calculator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #34495e;
+            font-family: 'Arial', sans-serif;
+        }
+        .calculator {
+            background: #ecf0f1;
+            width: 350px;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        .display {
+            width: 100%;
+            height: 40px;
+            font-size: 24px;
+            text-align: right;
+            border: none;
+            background-color: #bdc3c7;
+            color: #2c3e50;
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+        button {
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            background-color: #95a5a6;
+            color: white;
+        }
+        button:hover {
+            background-color: #7f8c8d;
+            transform: scale(1.1);
+        }
+        .operator {
+            background-color: #3498db;
+        }
+        .clear {
+            background-color: #e74c3c;
+        }
+        .equal {
+            background-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <input type="text" class="display" id="display" disabled />
+        <div class="buttons">
+            <button id="button1">1</button>
+            <button id="button2">2</button>
+            <button id="button3">3</button>
+            <button id="button4" class="operator">+</button>
+            
+            <button id="button5">4</button>
+            <button id="button6">5</button>
+            <button id="button7">6</button>
+            <button id="button8" class="operator">-</button>
+            
+            <button id="button9">7</button>
+            <button id="button0">0</button>
+            <button id="buttonC" class="clear">C</button>
+            <button id="buttonE" class="equal">=</button>
+            
+            <button id="buttonM" class="operator">*</button>
+            <button id="buttonD" class="operator">/</button>
+            <button id="buttonS" class="operator">.</button>
+            <button id="buttonA" class="operator">%</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById("display");
+        let currentInput = "";
+        let operator = "";
+        let previousInput = "";
+
+        function updateDisplay() {
+            display.value = currentInput || "0";
+        }
+
+        function clearDisplay() {
+            currentInput = "";
+            previousInput = "";
+            operator = "";
+            updateDisplay();
+        }
+
+        function performCalculation() {
+            if (previousInput && currentInput) {
+                let result;
+                switch (operator) {
+                    case "+":
+                        result = parseFloat(previousInput) + parseFloat(currentInput);
+                        break;
+                    case "-":
+                        result = parseFloat(previousInput) - parseFloat(currentInput);
+                        break;
+                    case "*":
+                        result = parseFloat(previousInput) * parseFloat(currentInput);
+                        break;
+                    case "/":
+                        result = parseFloat(previousInput) / parseFloat(currentInput);
+                        break;
+                    case "%":
+                        result = parseFloat(previousInput) % parseFloat(currentInput);
+                        break;
+                }
+                currentInput = result.toString();
+                previousInput = "";
+                operator = "";
+                updateDisplay();
+            }
+        }
+
+        document.querySelectorAll("button").forEach(button => {
+            button.addEventListener("click", function() {
+                const buttonText = this.innerText;
+
+                if (buttonText >= "0" && buttonText <= "9") {
+                    currentInput += buttonText;
+                    updateDisplay();
+                } else if (buttonText === "C") {
+                    clearDisplay();
+                } else if (buttonText === "=") {
+                    performCalculation();
+                } else {
+                    if (currentInput) {
+                        if (previousInput) {
+                            performCalculation();
+                        }
+                        previousInput = currentInput;
+                        operator = buttonText;
+                        currentInput = "";
+                        updateDisplay();
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
